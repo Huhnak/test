@@ -1,0 +1,50 @@
+import random
+from levels import levels
+
+level = 0
+playerSymbol = '@'  # Символ персонажа
+groundSymbol = '_'  # Символ пола
+wallSymbol = '#'  # Символ стены
+mapSize = levels[0][0]   # Размер карты
+playerCoords = levels[0][1]   # Координаты персонажа
+wallCoords = levels[0][2]  # Координаты стены
+treasureCoords = levels[0][3]   # создаем клад в случайной точке на карте
+
+def drawMap():  # Создание карты
+    for y in range(mapSize[1]):
+        for x in range(mapSize[0]):
+            if [x,y] == playerCoords:   # Размещение персонажа
+                print(playerSymbol, end='')
+            elif [x, y] in wallCoords:  # Размещение стены
+                print(wallSymbol, end='')
+            else:   # Размещение пола
+                print(groundSymbol, end='')
+        print()
+
+drawMap()
+while True:
+    inputKey = input('Куда вы хотите двигаться (wasd) или копать клад (f): ')     # wasd символы для движения, f для копания
+    if inputKey == 'w' and playerCoords[1] > 0:    # проверям хочет ли игрок идти наверх и не выйдет ли он за поле
+        if not [playerCoords[0], playerCoords[1]-1] in wallCoords:  # есть ли сверху стена
+            playerCoords[1] -= 1
+    elif inputKey == 's' and playerCoords[1] < mapSize[1] - 1:
+        if not [playerCoords[0], playerCoords[1] + 1] in wallCoords:  # есть ли снизу стена
+            playerCoords[1] += 1
+    elif inputKey == 'a' and playerCoords[0] > 0:
+        if not [playerCoords[0] - 1, playerCoords[1]] in wallCoords:  # есть ли слева стена
+            playerCoords[0] -= 1
+    elif inputKey == 'd' and playerCoords[0] < mapSize[0] - 1:
+        if not [playerCoords[0] + 1, playerCoords[1]] in wallCoords:  # есть ли справа стена
+            playerCoords[0] += 1
+    elif inputKey == 'f':   # копание клада
+        if playerCoords[0] == treasureCoords[0] and playerCoords[1] == treasureCoords[1]:   # проверка стоит ли персонаж на кладе
+            print('Вы откопали клад! 😄')
+            level += 1
+            mapSize = levels[level][0]
+            playerCoords = levels[level][1]
+            wallCoords = levels[level][2]
+            treasureCoords = levels[level][3]
+        else:
+            print('Тут ничего нет')
+    print('------------------------------------------------------------')
+    drawMap()   # отрисовываем карту
